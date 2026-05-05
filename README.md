@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Pravin Enterprises - Hardware Store E-Commerce Platform
 
 A complete Python Django-based e-commerce platform for an online hardware store.
@@ -339,3 +340,6 @@ This project is proprietary software for Pravin Enterprises.
 
 **Version**: 1.0.0  
 **Last Updated**: March 2026
+=======
+# Pravin-Enterprises
+>>>>>>> faf7995c40045b679eae5207ee99b735a14b8edf
