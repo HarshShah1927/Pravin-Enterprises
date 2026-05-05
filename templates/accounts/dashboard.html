@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Dashboard - Pravin Enterprises{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">
+        <i class="fas fa-user-circle"></i> Welcome, {{ request.user.first_name }}!
+    </h1>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h3 class="text-primary">{{ total_orders }}</h3>
+                    <p class="text-muted">Total Orders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h3 class="text-success">₹{{ total_spent }}</h3>
+                    <p class="text-muted">Total Spent</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>Quick Links</h5>
+                    <a href="{% url 'profile' %}" class="btn btn-sm btn-primary me-2">
+                        <i class="fas fa-user-edit"></i> Edit Profile
+                    </a>
+                    <a href="{% url 'addresses' %}" class="btn btn-sm btn-primary me-2">
+                        <i class="fas fa-map-marker-alt"></i> Addresses
+                    </a>
+                    <a href="{% url 'products' %}" class="btn btn-sm btn-success">
+                        <i class="fas fa-shopping-bag"></i> Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mb-3">Recent Orders</h3>
+    {% if recent_orders %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td>
+                        <a href="{% url 'order-detail' order.id %}">#{{ order.order_id }}</a>
+                    </td>
+                    <td>{{ order.created_at|date:"d M Y" }}</td>
+                    <td>₹{{ order.total_amount }}</td>
+                    <td>
+                        <span class="badge bg-info">{{ order.order_status|upper }}</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'order-detail' order.id %}" class="btn btn-sm btn-primary">
+                            View Details
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="{% url 'order-list' %}" class="btn btn-outline-primary">View All Orders</a>
+    {% else %}
+    <div class="alert alert-info">
+        <p class="mb-0">You haven't placed any orders yet. 
+            <a href="{% url 'products' %}">Start shopping now!</a>
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

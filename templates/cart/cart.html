@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart - Pravin Enterprises{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Shopping Cart</h1>
+
+    {% if cart_items %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'product-detail' item.product.slug %}">{{ item.product.name }}</a>
+                            </td>
+                            <td>₹{{ item.price_at_add }}</td>
+                            <td>
+                                <form method="post" action="{% url 'update-cart-item' item.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" class="form-control" value="{{ item.quantity }}" min="1" style="width: 80px;">
+                                    <button type="submit" class="btn btn-sm btn-primary mt-2">Update</button>
+                                </form>
+                            </td>
+                            <td><strong>₹{{ item.get_total }}</strong></td>
+                            <td>
+                                <form method="post" action="{% url 'remove-from-cart' item.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Order Summary</h5>
+                    <hr>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal ({{ cart.get_item_count }} items):</span>
+                            <span>₹{{ cart_total }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Shipping:</span>
+                            <span>Free</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tax:</span>
+                            <span>Calculated at checkout</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <h6>Estimated Total:</h6>
+                        <h6>₹{{ cart_total }}</h6>
+                    </div>
+                    <a href="{% url 'checkout' %}" class="btn btn-success btn-lg w-100">
+                        <i class="fas fa-credit-card"></i> Proceed to Checkout
+                    </a>
+                    <a href="{% url 'products' %}" class="btn btn-outline-primary w-100 mt-2">
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <i class="fas fa-shopping-cart"></i>
+        <p class="mb-0">Your cart is empty!</p>
+        <a href="{% url 'products' %}" class="btn btn-primary mt-3">Start Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Pravin Enterprises admin') }}{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'admin/css/custom_admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Pravin Enterprises') }}</a></div>
+{% endblock %}
+
+{% block userlinks %}
+  {% if site_url %}
+    <a href="{{ site_url }}">{% translate 'View site' %}</a> /
+  {% endif %}
+  {% if user.has_usable_password %}
+    <a href="{% url 'admin:password_change' %}">{% translate 'Change password' %}</a> /
+  {% endif %}
+  <form id="logout-form" method="post" action="{% url 'admin:logout' %}" class="inline-form">
+    {% csrf_token %}
+    <button type="submit">{% translate 'Log out' %}</button>
+  </form>
+  {% include "admin/color_theme_toggle.html" %}
+{% endblock %}
+
+{% block nav-global %}
+<nav id="admin-navbar" class="global-nav" aria-label="{% translate 'Admin navigation' %}">
+  <a href="{% url 'admin:index' %}">{% translate 'Dashboard' %}</a>
+  <a href="{% url 'admin:app_list' 'products' %}">{% translate 'Products' %}</a>
+  <a href="{% url 'admin:app_list' 'orders' %}">{% translate 'Orders' %}</a>
+  <a href="{% url 'admin:app_list' 'accounts' %}">{% translate 'Customers' %}</a>
+  <a href="{% url 'admin:app_list' 'payments' %}">{% translate 'Payments' %}</a>
+</nav>
+{% endblock %}

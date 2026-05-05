@@ -1,0 +1,29 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n static %}
+
+{% block content %}
+  <div class="admin-simplified">
+    <h2>Quick Actions</h2>
+    <div class="cards">
+      {% comment %} show a few main apps as large cards for easy access {% endcomment %}
+      {% for app in app_list %}
+        {# only show a subset of core apps as large cards #}
+        {% if app.app_label == 'products' or app.app_label == 'orders' or app.app_label == 'accounts' or app.app_label == 'payments' %}
+          <div class="card">
+            <h3>{{ app.name }}</h3>
+            <ul>
+              {% for model in app.models %}
+                <li><a href="{{ model.admin_url }}">{{ model.name }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <div class="help-box">
+      <h4>Need help?</h4>
+      <p>Use the links above for the main tasks: Products, Orders, Customers, and Invoices.</p>
+    </div>
+  </div>
+{% endblock %}
