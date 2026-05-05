@@ -81,6 +81,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -117,6 +118,11 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    import dj_database_url
+
+    DATABASES['default'] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -147,6 +153,14 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 # Media files
 MEDIA_URL = '/media/'
@@ -210,7 +224,7 @@ EMAIL_CONFIGURED = (
 )
 if DEBUG and not EMAIL_CONFIGURED:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-if not DEBUG and not EMAIL_CONFIGURED:
+if env_bool('REQUIRE_EMAIL_CONFIG', False) and not EMAIL_CONFIGURED:
     raise ImproperlyConfigured('Set real EMAIL_HOST_USER and EMAIL_HOST_PASSWORD in production.')
 EMAIL_TIMEOUT = int(os.getenv('EMAIL_TIMEOUT', 20))
 SERVER_EMAIL = os.getenv('SERVER_EMAIL', DEFAULT_FROM_EMAIL)
