@@ -1,0 +1,5 @@
+name = "pravinenterprises"
+compatibility_date = "2026-05-06"
+
+[assets]
+directory = "./staticfiles"
